@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { authController } from '../controllers/authController.js'
+import { userValidation } from '../middlewares/validation.js'
 
 export const authRoutes = () => {
   const authRouter = Router()
@@ -9,7 +10,7 @@ export const authRoutes = () => {
     .post(login)
 
   authRouter.route('/auth/register')
-    .post(register)
+    .post(userValidation, register)
 
   authRouter.route('/auth/refresh')
     .post(refresh)

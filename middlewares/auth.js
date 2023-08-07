@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import HTTP_STATUS from '../helpers/httpStatus.js'
 
 export const auth = async (request, response, next) => {
-    const headers = request.headers
+  const headers = request.headers
   const { authorization } = headers
   const token = authorization.split(' ')[1]
 
