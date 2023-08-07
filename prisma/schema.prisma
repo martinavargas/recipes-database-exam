@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Recipe {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  categoryID      String[]     @map("category_id") @db.ObjectId
+  categories      Category[]   @relation(fields: [categoryID], references: [id])
+  preparationTime String?      @map("preparation_time")
+  cookingTime     String?      @map("cooking_time")
+  instructions    String
+  ingredientID    String[]     @map("ingredient_id") @db.ObjectId
+  ingredients     Ingredient[] @relation(fields: [ingredientID], references: [id])
+  user            User[]
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  deletedAt       Boolean?     @default(false) @map("deleted_at")
+
+  @@map("recipe")
+}
+
+model Ingredient {
+  id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  quantityID                String   @map("quantity_id") @db.ObjectId
+  quantity                  Quantity @relation(fields: [quantityID], references: [id])
+  recipeID                  String[] @map("recipe_id") @db.ObjectId
+  recipesWithThisIngredient Recipe[] @relation(fields: [recipeID], references: [id])
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+  deletedAt                 Boolean? @default(false) @map("deleted_at")
+
+  @@map("ingredient")
+}
+
+model Category {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  recipeID              String[] @map("recipe_id") @db.ObjectId
+  recipesInThisCategory Recipe[] @relation(fields: [recipeID], references: [id])
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  deletedAt             Boolean? @default(false) @map("deleted_at")
+
+  @@map("category")
+}
+
+model Quantity {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  grams       Int
+  cup         Int
+  spoon       Int
+  ingredients Ingredient[]
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   Boolean?     @default(false) @map("deleted_at")
+
+  @@map("quantity")
+}
+
+model User {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName       String   @map("first_name")
+  lastName        String   @map("last_name")
+  email           String   @unique
+  address         String
+  password        String
+  birthday        DateTime
+  recipeID        String   @map("recipe_id") @db.ObjectId
+  favouriteRecipe Recipe   @relation(fields: [recipeID], references: [id])
+  role            String   @default("USER")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  deletedAt       Boolean? @default(false) @map("deleted_at")
+}
