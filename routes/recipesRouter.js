@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { recipesController } from '../controllers/recipesController.js'
 import { recipeValidation, recipeParamsValidation } from '../middlewares/validation.js'
-import { auth } from '../middlewares/auth.js'
 
 export const recipesRoutes = () => {
   const recipesRouter = Router()
@@ -15,12 +14,12 @@ export const recipesRoutes = () => {
 
   recipesRouter.route('/recipes')
     .get(getRecipes)
-    .post(auth, recipeValidation, createRecipe)
+    .post(recipeValidation, createRecipe)
 
   recipesRouter.route('/recipes/:id')
     .get(getRecipeById)
-    .put(auth, recipeParamsValidation, recipeValidation, updateRecipe)
-    .delete(auth, deleteRecipe)
+    .put(recipeParamsValidation, recipeValidation, updateRecipe)
+    .delete(deleteRecipe)
 
   return recipesRouter
 }

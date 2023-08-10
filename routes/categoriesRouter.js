@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { categoriesController } from '../controllers/categoriesController.js'
 import { categoryValidation, categoryParamsValidation } from '../middlewares/validation.js'
+import { auth } from '../middlewares/auth.js'
 
 export const categoriesRoutes = () => {
   const categoriesRouter = Router()
@@ -14,13 +15,12 @@ export const categoriesRoutes = () => {
 
   categoriesRouter.route('/categories')
     .get(getCategories)
-    .post(categoryValidation, createCategory)
+    .post(auth, categoryValidation, createCategory)
 
-  categoriesRouter
-    .route('/categories/:id')
+  categoriesRouter.route('/categories/:id')
     .get(getCategoryById)
-    .put(categoryParamsValidation, categoryValidation, updateCategory)
-    .delete(deleteCategory)
+    .put(auth, categoryParamsValidation, categoryValidation, updateCategory)
+    .delete(auth, deleteCategory)
 
   return categoriesRouter
 }
